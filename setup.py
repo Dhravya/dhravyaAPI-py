@@ -5,7 +5,7 @@ from distutils.core import setup
 setup(
   name = 'dhravyaAPI',         # How you named your package folder (MyLib)
   packages = ['dhravyaAPI'],   # Chose the same as "name"
-  version = '0.3',      # Start with a small number and increase it with every change you make
+  version = '1.0',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'This is an API that I made while learning and it does a lot of cool things like OCR and QR code generation',   # Give a short description about your library
   author = 'Dhravya Shah',                   # Type in your name
@@ -14,7 +14,8 @@ setup(
   download_url = 'https://github.com/Dhravya/dhravyaAPI/archive/refs/tags/v0.2.tar.gz',    # I explain this later on
   keywords = ['API wrapper', 'qrcode', 'ocr', 'dhravya'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
-          'requests'
+          'requests',
+          'aiohttp'
       ],
   long_description="Check https://github.com/dhravya/dhravyaapi for more information",
   long_description_content_type='text/markdown',
