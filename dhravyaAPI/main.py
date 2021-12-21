@@ -141,3 +141,18 @@ class DhravyaAPI:
         url = "https://api.dhravya.me/joke"
         response = requests.get(url)
         return response.json()["joke"]
+
+    def mcstats(self, host : str=None, port:int=25565) -> dict:
+        """Returns a dictionary of the Minecraft server's status
+        Basic Usage:
+        >>> from dhravyaapi import DhravyaAPI
+        >>> dhravyaapi = DhravyaAPI()
+        >>> mcstats = dhravyaapi.mcstats(host="mc.hypixel.net")
+        >>> print(mcstats)
+        """
+        url = "https://api.dhravya.me/mcstats"
+        if host is None or port is None:
+            raise ValueError("You must provide a host and port")
+        params = {"host": host, "port": port}
+        response = requests.get(url, params=params)
+        return dict(response.json())
