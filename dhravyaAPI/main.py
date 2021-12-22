@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 
 class ServerError(Exception):
@@ -6,6 +6,12 @@ class ServerError(Exception):
 
 
 class DhravyaAPI:
+    """Api that does a lot of things. Check https://api.dhravya.me/ for endpoints
+    Basic Usage:
+    >>> from dhravyaapi import DhravyaAPI
+    >>> dhravyaapi = DhravyaAPI() # Create a new instance of the API
+    >>> response = dhravyaapi.eightball()"""
+
     def __init__(self) -> None:
         """Api that does a lot of things. Check https://api.dhravya.me/ for endpoints
         Basic Usage:
@@ -14,6 +20,21 @@ class DhravyaAPI:
         >>> response = dhravyaapi.eightball()"""
         pass
 
+    def httpx_get(self,url, params=None):
+        params = params if params else {}
+        with httpx.Client() as client:
+            try:
+                return client.get(url, params = params)
+            except Exception as e:
+                return e
+
+    def httpx_post(self, url, files = None):
+        with httpx.Client() as client:
+            try:
+                return client.post(url, files = files if files else {}) 
+            except Exception as e:
+                return e
+
     def eightball(self) -> str:
         """Returns a random response from the 8ball
         Basic Usage:
@@ -21,7 +42,8 @@ class DhravyaAPI:
         >>> dhravyaapi = DhravyaAPI() # Create a new instance of the API
         >>> response = dhravyaapi.eightball()"""
         url = "https://api.dhravya.me/8ball"
-        response = requests.get(url)
+        # Get response using httpx
+        response = self.httpx_get(url)
         return response.json()["response"]
 
     def qrcode(
@@ -41,7 +63,7 @@ class DhravyaAPI:
         if not mask in range(1, 6):
             raise ValueError("Mask must be a number between 1 and 5")
         params = {"query": query, "drawer": drawer, "mask": mask}
-        response = requests.get(url, params=params)
+        response = self.httpx_get(url, params=params)
         # response is an image
         return response.content
 
@@ -59,7 +81,7 @@ class DhravyaAPI:
         >>> # Note that this returns a dictionary if url_only is False"""
         url = "https://api.dhravya.me/meme/"
 
-        response = requests.get(url + topic)
+        response = self.httpx_get(url + topic)
         if response.status_code != 200:
             raise ServerError("Server returned an error")
 
@@ -84,7 +106,7 @@ class DhravyaAPI:
         """
         url = "https://api.dhravya.me/meme"
 
-        response = requests.get(url, params={"subreddit": subreddit})
+        response = self.httpx_get(url, params={"subreddit": subreddit})
         if response.status_code != 200:
             raise ServerError("Server returned an error : " + str(response.status_code))
         return response.content
@@ -102,9 +124,9 @@ class DhravyaAPI:
         if image is None and url is None:
             raise ValueError("You must provide either an image or a url")
         if url:
-            response = requests.get(apiurl, params={"url": url})
+            response = self.httpx_get(apiurl, {"url": url})
         else:
-            response = requests.post(apiurl, files={"image": image})
+            response = self.httpx_post(apiurl, {"image": image})
         if response.status_code != 200:
             raise ServerError("Server returned an error : " + str(response.status_code))
         return response.json()["text"]
@@ -117,7 +139,7 @@ class DhravyaAPI:
         >>> compliment = dhravyaapi.compliment()
         """
         url = "https://api.dhravya.me/compliment"
-        response = requests.get(url)
+        response = self.httpx_get(url)
         return response.json()["compliment"]
 
     def wyr(self) -> str:
@@ -128,7 +150,7 @@ class DhravyaAPI:
         >>> wyr = dhravyaapi.wyr()
         """
         url = "https://api.dhravya.me/wyr"
-        response = requests.get(url)
+        response = self.httpx_get(url)
         return response.json()["wyr"]
 
     def joke(self) -> str:
@@ -139,5 +161,21 @@ class DhravyaAPI:
         >>> joke = dhravyaapi.joke()
         """
         url = "https://api.dhravya.me/joke"
-        response = requests.get(url)
+        response = self.httpx_get(url)
         return response.json()["joke"]
+
+    def mcstats(self, host : str=None, port:int=25565) -> dict:
+        """Returns a dictionary of the Minecraft server's status
+        Basic Usage:
+        >>> from dhravyaapi import DhravyaAPI
+        >>> dhravyaapi = DhravyaAPI()
+        >>> mcstats = dhravyaapi.mcstats(host="mc.hypixel.net")
+        >>> print(mcstats)
+        """
+        url = "https://api.dhravya.me/mcstats"
+        if host is None or port is None:
+            raise ValueError("You must provide a host and port")
+        params = {"host": host, "port": port}
+        response = self.httpx_get(url, params)
+        return dict(response.json())
+

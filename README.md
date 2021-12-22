@@ -2,6 +2,8 @@
 
 api_url = "https://api.dhravya.me/"
 
+## This wrapper now has async support, its basically the same except it uses asyncio
+
 ## Features:
 - Generate a qr code for text, url, image, or basically anything, in many different, fancy formats
 - OCR: Get text from an image or an image URL
