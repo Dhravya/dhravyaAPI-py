@@ -2,6 +2,14 @@ import aiohttp
 
 
 class AsyncClient:
+    """Async Client for the API, uses aiohttp. Pass in the event loop to use\n
+    Usage:
+    >>> import aiohttp
+    >>> import asyncio
+    >>> from dhravyaAPI import AsyncClient
+    >>> client = AsyncClient(loop=asyncio.get_event_loop())
+    """
+
     def __init__(self, loop):
         """Asynchronous client for the API, uses aiohttp"""
 
