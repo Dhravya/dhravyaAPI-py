@@ -1,3 +1,6 @@
+# THIS REPO HAS BEEN DEPRECATED AND NOT MAINTAINED. 
+# Please check out https://github.com/27Saumya/dhravyapy
+
 # This is a python wrapper for my api
 
 api_url = "https://api.dhravya.me/"
